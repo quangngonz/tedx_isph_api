@@ -5,16 +5,19 @@ import dotenv
 from supabase import create_client
 from storage3.exceptions import StorageApiError
 
+# Load .env
 dotenv.load_dotenv()
 
+# Supabase client
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 supabase = create_client(url, key)
 
+# Flask app
 app = Flask(__name__)
 
-@app.route("/api/generate_qr", methods=["GET"])
-def generate_qr():
+@app.route("/", methods=["GET"])
+def generate_qr_codes():
     response = supabase.table('ticket_info').select('id', 'name').execute()
     tickets = response.data
 
@@ -22,7 +25,6 @@ def generate_qr():
     for ticket in tickets:
         qr_code = pyqrcode.create(ticket['id'])
         file_name = f"{ticket['id']}.png"
-
         qr_code.png(file_name, scale=6)
 
         try:

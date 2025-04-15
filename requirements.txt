@@ -1,5 +1,6 @@
-supabase
+Flask
 pyqrcode
 pypng
 python-dotenv
-Flask
+supabase
+storage3
