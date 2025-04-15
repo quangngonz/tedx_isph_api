@@ -2,3 +2,4 @@ supabase
 pyqrcode
 pypng
 python-dotenv
+Flask

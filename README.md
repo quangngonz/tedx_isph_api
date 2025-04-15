@@ -4,6 +4,7 @@
 
 - **URL:** `/tickets`
 - **Method:** `GET`
+- **Handler:** `index.js`
 - **Description:** Retrieves a list of all records from the `ticket_info` table in Supabase.
 - **Success Response:**
   - **Code:** 200 OK
@@ -16,6 +17,7 @@
 
 - **URL:** `/check-in/:id`
 - **Method:** `POST`
+- **Handler:** `index.js`
 - **URL Parameters:**
   - `id`: The unique identifier of the ticket to check-in (should match the `id` in the `ticket_info` table).
 - **Description:** Marks a specific ticket as attended (`attendance = true` in `ticket_info`) and logs the action in the `check_in_log` table. Prevents checking in the same ticket multiple times.
@@ -28,13 +30,15 @@
   - **Code:** 500 Internal Server Error
     - **Content:** `{ "error": "Supabase error message" }` (If there's an issue updating `ticket_info` or inserting into `check_in_log`)
 
-## Dependencies
+### 3. Generate and Upload QR Codes
 
-- **Express:** Fast, unopinionated, minimalist web framework for Node.js.
-- **@supabase/supabase-js:** Official JavaScript client library for Supabase.
-- **dotenv:** Loads environment variables from a `.env` file into `process.env`.
-- **nodemon (devDependency):** Utility that monitors for changes and automatically restarts the Node.js application, useful during development.
-
-## License
-
-MIT
+- **URL:** `/generate-qr-codes`
+- **Method:** `GET` (Note: Can be triggered by other methods too, as the handler doesn't check)
+- **Handler:** `api/generate_qr_code.py` (Python Serverless Function)
+- **Description:** Fetches all ticket IDs from `ticket_info`, generates a QR code PNG for each, uploads/overwrites it in the `qr-codes` Supabase Storage bucket (named `{ticket_id}.png`), and returns the public URLs.
+- **Success Response:**
+  - **Code:** 200 OK
+  - **Content:** `{ "message": "QR codes generated successfully", "qr_urls": { "ticket_id_1": "public_url_1", ... } }` (Dictionary mapping ticket IDs to their public Supabase Storage URLs)
+- **Error Response:**
+  - **Code:** 500 Internal Server Error (or other platform-specific error codes)
+  - **Content:** Varies depending on the error (e.g., Supabase connection issue, storage upload failure). Error details might appear in function logs.
