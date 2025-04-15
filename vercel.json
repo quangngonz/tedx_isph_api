@@ -4,12 +4,20 @@
     {
       "src": "index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/generate_qr_code.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
+      "src": "/generate-qr-codes",
+      "dest": "/api/generate_qr_code.py"
+    },
+    {
       "src": "/(.*)",
-      "dest": "index.js"
+      "dest": "/index.js"
     }
   ]
 }
