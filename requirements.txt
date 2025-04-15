@@ -1,3 +1,4 @@
 supabase
 pyqrcode
 pypng
+python-dotenv
