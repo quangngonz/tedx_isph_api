@@ -1,6 +1,8 @@
-require('dotenv').config();
-const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import { createClient } from '@supabase/supabase-js';
+import generateQrCodes from './controllers/generate_qr_codes.js';
 
 const app = express();
 const port = 3000;
@@ -11,9 +13,7 @@ const supabase = createClient(
 );
 
 app.get('/tickets', async (req, res) => {
-  const { data, error } = await supabase
-    .from('ticket_info')
-    .select('*');
+  const { data, error } = await supabase.from('ticket_info').select('*');
 
   if (error) {
     return res.status(500).json({ error: error.message });
@@ -32,7 +32,8 @@ app.post('/check-in/:id', async (req, res) => {
     .eq('ticket_id', id)
     .single();
 
-  if (checkError && checkError.code !== 'PGRST116') { // ignore 'No rows found'
+  if (checkError && checkError.code !== 'PGRST116') {
+    // ignore 'No rows found'
     return res.status(500).json({ error: checkError.message });
   }
 
@@ -63,9 +64,11 @@ app.post('/check-in/:id', async (req, res) => {
 
   res.json({
     message: 'Checked in successfully',
-    ticket: updatedTicket
+    ticket: updatedTicket,
   });
 });
+
+app.get('/generate-qr-codes', generateQrCodes);
 
 app.listen(port, () => {
   console.log(`🚀 Server listening on http://localhost:${port}`);

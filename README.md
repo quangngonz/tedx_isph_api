@@ -34,7 +34,7 @@
 
 - **URL:** `/generate-qr-codes`
 - **Method:** `GET` (Note: Can be triggered by other methods too, as the handler doesn't check)
-- **Handler:** `api/generate_qr_code.py` (Python Serverless Function)
+- **Handler:** `controllers/generate_qr_codes.js`
 - **Description:** Fetches all ticket IDs from `ticket_info`, generates a QR code PNG for each, uploads/overwrites it in the `qr-codes` Supabase Storage bucket (named `{ticket_id}.png`), and returns the public URLs.
 - **Success Response:**
   - **Code:** 200 OK
