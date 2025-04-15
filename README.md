@@ -33,12 +33,29 @@
 ### 3. Generate and Upload QR Codes
 
 - **URL:** `/generate-qr-codes`
-- **Method:** `GET` (Note: Can be triggered by other methods too, as the handler doesn't check)
+- **Method:** `GET`
 - **Handler:** `controllers/generate_qr_codes.js`
-- **Description:** Fetches all ticket IDs from `ticket_info`, generates a QR code PNG for each, uploads/overwrites it in the `qr-codes` Supabase Storage bucket (named `{ticket_id}.png`), and returns the public URLs.
+- **Description:** Fetches all ticket information from the `ticket_info` table in Supabase, generates a QR code PNG for each ticket, uploads or overwrites the QR code in the `qr-codes` Supabase Storage bucket (using the format `{ticket_id}.png`), and returns the public URLs of the uploaded QR codes.
+
 - **Success Response:**
-  - **Code:** 200 OK
-  - **Content:** `{ "message": "QR codes generated successfully", "qr_urls": { "ticket_id_1": "public_url_1", ... } }` (Dictionary mapping ticket IDs to their public Supabase Storage URLs)
-- **Error Response:**
-  - **Code:** 500 Internal Server Error (or other platform-specific error codes)
-  - **Content:** Varies depending on the error (e.g., Supabase connection issue, storage upload failure). Error details might appear in function logs.
+
+  - **Code:** `200 OK`
+  - **Content:**
+    ```json
+    {
+      "ticket_id_1": "public_url_1",
+      "ticket_id_2": "public_url_2",
+      ...
+    }
+    ```
+    A dictionary mapping each ticket's ID to its public URL in Supabase Storage.
+
+- **Error Responses:**
+  - **Code:** `500 Internal Server Error`
+  - **Content:**
+    ```json
+    {
+      "error": "An error occurred while generating QR codes."
+    }
+    ```
+    This may occur due to issues like Supabase connection errors, storage upload failures, or QR code generation errors.
